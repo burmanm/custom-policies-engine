@@ -1,6 +1,7 @@
 package org.hawkular.alerts.rest
 
 import io.quarkus.test.junit.QuarkusTest
+import org.apache.groovy.json.internal.LazyMap
 import org.hawkular.alerts.api.model.Severity
 import org.hawkular.alerts.api.model.condition.*
 import org.hawkular.alerts.api.model.data.AvailabilityType
@@ -450,10 +451,9 @@ class LifecycleITest extends AbstractQuarkusITestBase {
         assertEquals(1, resp.data.size())
         assertNotNull(resp.data[0].evalSets)
         assertTrue(!resp.data[0].evalSets.isEmpty())
-        AvailabilityConditionEval eval =
-            (AvailabilityConditionEval)resp.data[0].evalSets.iterator().next().iterator().next();
-        assertNotNull(eval.getContext())
-        assertEquals("contextValue", eval.getContext().get("contextName"))
+        LazyMap eval = resp.data[0].evalSets.iterator().next().iterator().next();
+        assertNotNull(eval.context)
+        assertEquals("contextValue", eval.context.get("contextName"))
 
         // FETCH alerts for test-manual-trigger, there should be 5 from the earlier test
         resp = client.get(path: "", query: [startTime:start,triggerIds:"test-manual-trigger"] )
