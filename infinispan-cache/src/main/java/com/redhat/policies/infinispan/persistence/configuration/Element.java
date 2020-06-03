@@ -11,7 +11,9 @@ import java.util.Map;
 public enum Element {
    // must be first
    UNKNOWN(null),
-   DB_STORE("db-store")
+   DB_STORE("db-store"),
+   ENTITIES("entities"),
+   ENTITY("entity")
    ;
 
    private final String name;

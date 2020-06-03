@@ -6,6 +6,8 @@ import org.infinispan.commons.configuration.elements.ElementDefinition;
 import org.infinispan.configuration.cache.AbstractStoreConfigurationBuilder;
 import org.infinispan.configuration.cache.PersistenceConfigurationBuilder;
 
+import java.util.Map;
+
 import static org.infinispan.configuration.cache.AbstractStoreConfiguration.SEGMENTED;
 import static org.infinispan.util.logging.Log.CONFIG;
 
@@ -27,13 +29,6 @@ public class DBStoreConfigurationBuilder
    }
 
 
-   @Deprecated
-   public DBStoreConfigurationBuilder batchSize(long batchSize) {
-      int size = batchSize > Integer.MAX_VALUE ? Integer.MAX_VALUE : (batchSize < Integer.MIN_VALUE ? Integer.MIN_VALUE : (int) batchSize);
-      maxBatchSize(size);
-      return self();
-   }
-
    public DBStoreConfigurationBuilder storeMetadata(boolean storeMetadata) {
       attributes.attribute(DBStoreConfiguration.STORE_METADATA).set(storeMetadata);
       return self();
@@ -47,6 +42,12 @@ public class DBStoreConfigurationBuilder
       }
       // how do you validate required attributes?
       super.validate();
+   }
+
+   public void addStoredEntity(String prefix, Class<?> targetClass) {
+      Map<String, Class<?>> prefixToClassMap = attributes.attribute(DBStoreConfiguration.ENTITIES).get();
+      prefixToClassMap.put(prefix, targetClass);
+      attributes.attribute(DBStoreConfiguration.ENTITIES).set(prefixToClassMap);
    }
 
    @Override

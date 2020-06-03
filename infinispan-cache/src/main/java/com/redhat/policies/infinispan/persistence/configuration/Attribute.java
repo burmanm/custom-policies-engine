@@ -13,8 +13,7 @@ public enum Attribute {
    UNKNOWN(null),
 
    PERSISTENCE_UNIT_NAME("persistence-unit"),
-   ENTITY_CLASS_NAME("entity-class"),
-   STORE_METADATA("store-metadata") // TODO Remove this, it should always be true
+   KEYPREFIX("key-prefix")
    ;
 
    private final String name;

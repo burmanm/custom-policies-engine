@@ -1,6 +1,7 @@
 package com.redhat.policies.infinispan.persistence.configuration;
 
 import org.infinispan.commons.configuration.ConfigurationBuilderInfo;
+import org.infinispan.commons.util.Util;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.parsing.ConfigurationBuilderHolder;
 import org.infinispan.configuration.parsing.ConfigurationParser;
@@ -8,9 +9,12 @@ import org.infinispan.configuration.parsing.Namespace;
 import org.infinispan.configuration.parsing.ParseUtils;
 import org.infinispan.configuration.parsing.Parser;
 import org.infinispan.configuration.parsing.XMLExtendedStreamReader;
+import org.kohsuke.MetaInfServices;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
+
+@MetaInfServices
 
 @Namespace(root = "db-store")
 @Namespace(uri = "urn:infinispan:config:store:db:*", root = "db-store")
@@ -43,18 +47,49 @@ public class DBStoreConfigurationParser implements ConfigurationParser {
                builder.persistenceUnitName(value);
                break;
             }
-            case STORE_METADATA: {
-               builder.storeMetadata(Boolean.valueOf(value));
-               break;
-            }
             default: {
                Parser.parseStoreAttribute(reader, i, builder);
             }
          }
       }
 
-      while (reader.hasNext() && (reader.nextTag() != XMLStreamConstants.END_ELEMENT)) {
-         Parser.parseStoreElement(reader, builder);
+      while(reader.hasNext() && (reader.nextTag() != XMLStreamConstants.END_ELEMENT)) {
+         Element element = Element.forName(reader.getLocalName());
+         switch(element) {
+            case ENTITIES:
+               parseEntities(reader, builder, classLoader);
+               break;
+            default:
+               Parser.parseStoreElement(reader, builder);
+         }
+      }
+   }
+
+   private void parseEntities(XMLExtendedStreamReader reader, DBStoreConfigurationBuilder builder, ClassLoader classLoader) throws XMLStreamException {
+      while(reader.hasNext() && reader.nextTag() != 2) {
+         Element element = Element.forName(reader.getLocalName());
+         switch(element) {
+            case ENTITY:
+               String className = reader.getElementText();
+               String keyPrefix = null;
+               for(int i = 0; i < reader.getAttributeCount(); i++) {
+                  String attributeName = reader.getAttributeLocalName(i);
+                  String value = reader.getAttributeValue(i);
+                  Attribute attribute = Attribute.forName(reader.getAttributeLocalName(i));
+                  switch(attribute) {
+                     case KEYPREFIX:
+                        keyPrefix = value;
+                        break;
+                     default:
+                        throw ParseUtils.unexpectedAttribute(reader, i);
+                  }
+               }
+               Class<?> storedEntity = Util.loadClass(className, classLoader);
+               builder.addStoredEntity(keyPrefix, storedEntity);
+               break;
+            default:
+               throw ParseUtils.unexpectedElement(reader);
+         }
       }
    }
 
