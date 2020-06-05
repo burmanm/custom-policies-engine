@@ -1,4 +1,4 @@
-package com.redhat.policies.infinispan.persistence.configuration;
+package com.redhat.cloud.policies.infinispan.persistence.configuration;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,6 @@ public enum Attribute {
    UNKNOWN(null),
 
    PERSISTENCE_UNIT_NAME("persistence-unit"),
-   KEYPREFIX("key-prefix")
    ;
 
    private final String name;

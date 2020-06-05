@@ -1,4 +1,4 @@
-package com.redhat.policies.infinispan.persistence.impl;
+package com.redhat.cloud.policies.infinispan.persistence.impl;
 
 import org.infinispan.configuration.global.GlobalConfiguration;
 import org.infinispan.factories.GlobalComponentRegistry;

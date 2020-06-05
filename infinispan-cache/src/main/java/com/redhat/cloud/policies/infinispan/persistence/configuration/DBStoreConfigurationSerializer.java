@@ -1,4 +1,4 @@
-package com.redhat.policies.infinispan.persistence.configuration;
+package com.redhat.cloud.policies.infinispan.persistence.configuration;
 
 import org.infinispan.configuration.serializing.AbstractStoreSerializer;
 import org.infinispan.configuration.serializing.ConfigurationSerializer;
@@ -10,6 +10,7 @@ public class DBStoreConfigurationSerializer extends AbstractStoreSerializer impl
 
    @Override
    public void serialize(XMLExtendedStreamWriter writer, DBStoreConfiguration configuration) throws XMLStreamException {
+      // TODO Implement?
       writer.writeStartElement(Element.DB_STORE);
       configuration.attributes().write(writer);
       writeCommonStoreSubAttributes(writer, configuration);

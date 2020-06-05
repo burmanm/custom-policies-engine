@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <xs:schema attributeFormDefault="unqualified"
            elementFormDefault="qualified" version="1.0"
-           targetNamespace="urn:infinispan:config:store:db:2.1"
-           xmlns:tns="urn:infinispan:config:store:db:2.1"
+           targetNamespace="urn:infinispan:config:store:db:10.1"
+           xmlns:tns="urn:infinispan:config:store:db:10.1"
            xmlns:config="urn:infinispan:config:10.1"
            xmlns:xs="http://www.w3.org/2001/XMLSchema">
     <xs:import namespace="urn:infinispan:config:10.1"
@@ -21,14 +21,6 @@
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-                <xs:attribute name="store-metadata" type="xs:boolean" default="${JpaStore.storeMetadata}">
-                    <xs:annotation>
-                        <xs:documentation>
-                            Store Infinispan metadata (expiration, versioning, timestamps) with the
-                            entries. Default is true.
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
                 <xs:element name="entities" type="tns:entities" maxOccurence="1" />
             </xs:extension>
         </xs:complexContent>
@@ -36,7 +28,5 @@
     <xs:complexType name="entities">
         <xs:element name="entity" type="tns:entity" minOccurence="1" maxOccurs="unbounded"/>
     </xs:complexType>
-    <xs:complexType name="entity">
-        <xs:attribute name="key-prefix" type="xs:string" />
-    </xs:complexType>
+    <xs:simpleType name="entity" />
 </xs:schema>

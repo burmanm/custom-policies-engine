@@ -1,4 +1,4 @@
-package com.redhat.policies.infinispan.persistence.configuration;
+package com.redhat.cloud.policies.infinispan.persistence.configuration;
 
 import org.infinispan.commons.configuration.ConfigurationBuilderInfo;
 import org.infinispan.commons.util.Util;
@@ -71,21 +71,8 @@ public class DBStoreConfigurationParser implements ConfigurationParser {
          switch(element) {
             case ENTITY:
                String className = reader.getElementText();
-               String keyPrefix = null;
-               for(int i = 0; i < reader.getAttributeCount(); i++) {
-                  String attributeName = reader.getAttributeLocalName(i);
-                  String value = reader.getAttributeValue(i);
-                  Attribute attribute = Attribute.forName(reader.getAttributeLocalName(i));
-                  switch(attribute) {
-                     case KEYPREFIX:
-                        keyPrefix = value;
-                        break;
-                     default:
-                        throw ParseUtils.unexpectedAttribute(reader, i);
-                  }
-               }
                Class<?> storedEntity = Util.loadClass(className, classLoader);
-               builder.addStoredEntity(keyPrefix, storedEntity);
+               builder.addStoredEntity(storedEntity);
                break;
             default:
                throw ParseUtils.unexpectedElement(reader);

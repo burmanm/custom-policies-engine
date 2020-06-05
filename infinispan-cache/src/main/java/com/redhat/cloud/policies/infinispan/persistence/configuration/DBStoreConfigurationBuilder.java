@@ -1,12 +1,12 @@
-package com.redhat.policies.infinispan.persistence.configuration;
+package com.redhat.cloud.policies.infinispan.persistence.configuration;
 
-import com.redhat.policies.infinispan.persistence.DBStore;
+import com.redhat.cloud.policies.infinispan.persistence.DBStore;
 import org.infinispan.commons.configuration.ConfigurationBuilderInfo;
 import org.infinispan.commons.configuration.elements.ElementDefinition;
 import org.infinispan.configuration.cache.AbstractStoreConfigurationBuilder;
 import org.infinispan.configuration.cache.PersistenceConfigurationBuilder;
 
-import java.util.Map;
+import java.util.Set;
 
 import static org.infinispan.configuration.cache.AbstractStoreConfiguration.SEGMENTED;
 import static org.infinispan.util.logging.Log.CONFIG;
@@ -28,12 +28,6 @@ public class DBStoreConfigurationBuilder
       return DBStoreConfiguration.ELEMENT_DEFINITION;
    }
 
-
-   public DBStoreConfigurationBuilder storeMetadata(boolean storeMetadata) {
-      attributes.attribute(DBStoreConfiguration.STORE_METADATA).set(storeMetadata);
-      return self();
-   }
-
    @Override
    public void validate() {
       Boolean segmented = attributes.attribute(SEGMENTED).get();
@@ -44,10 +38,10 @@ public class DBStoreConfigurationBuilder
       super.validate();
    }
 
-   public void addStoredEntity(String prefix, Class<?> targetClass) {
-      Map<String, Class<?>> prefixToClassMap = attributes.attribute(DBStoreConfiguration.ENTITIES).get();
-      prefixToClassMap.put(prefix, targetClass);
-      attributes.attribute(DBStoreConfiguration.ENTITIES).set(prefixToClassMap);
+   public void addStoredEntity(Class<?> targetClass) {
+      Set<Class<?>> entities = attributes.attribute(DBStoreConfiguration.ENTITIES).get();
+      entities.add(targetClass);
+      attributes.attribute(DBStoreConfiguration.ENTITIES).set(entities);
    }
 
    @Override
