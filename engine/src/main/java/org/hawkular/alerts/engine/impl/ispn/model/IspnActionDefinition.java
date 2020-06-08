@@ -2,30 +2,50 @@ package org.hawkular.alerts.engine.impl.ispn.model;
 
 import java.io.Serializable;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import org.hawkular.alerts.api.model.action.ActionDefinition;
+import org.hawkular.alerts.engine.impl.ispn.model.jpa.IspnActionDefinitionId;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
 
 /**
  * @author Jay Shaughnessy
  * @author Lucas Ponce
  */
 @Indexed(index = "actionDefinition")
+@Entity
+@IdClass(IspnActionDefinitionId.class)
+@TypeDefs({
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+})
 public class IspnActionDefinition implements Serializable {
+    @Id
     @Field(store = Store.YES, analyze = Analyze.NO)
     private String tenantId;
 
+    @Id
     @Field(store = Store.YES, analyze = Analyze.NO)
     private String actionPlugin;
 
+    @Id
     @Field(store = Store.YES, analyze = Analyze.NO)
     private String actionId;
 
     @Field(store = Store.YES, analyze = Analyze.NO)
     private boolean global;
 
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
     private ActionDefinition actionDefinition;
 
     public IspnActionDefinition() {

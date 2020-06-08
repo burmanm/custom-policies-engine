@@ -60,6 +60,7 @@ import org.hawkular.alerts.engine.service.AlertsEngine;
 import org.hawkular.alerts.log.AlertingLogger;
 import org.hawkular.alerts.log.MsgLogging;
 import org.infinispan.Cache;
+import org.infinispan.commons.dataconversion.MediaType;
 import org.infinispan.query.Search;
 import org.infinispan.query.dsl.FilterConditionContext;
 import org.infinispan.query.dsl.QueryBuilder;
@@ -77,19 +78,22 @@ public class IspnDefinitionsServiceImpl implements DefinitionsService {
     AlertsContext alertsContext;
 
     Cache<String, Object> backend;
-
+    Cache<String, Object> backendTwo;
     QueryFactory queryFactory;
+    QueryFactory queryFactoryTwo;
 
     private List<DefinitionsEvent> deferredNotifications = new ArrayList<>();
     private int deferNotificationsCount = 0;
 
     public void init() {
         backend = IspnCacheManager.getCacheManager().getCache("backend");
+        backendTwo = IspnCacheManager.getCacheManager().getCache("backend-new");
         if (backend == null) {
             log.error("Ispn backend cache not found. Check configuration.");
             throw new RuntimeException("backend cache not found");
         }
         queryFactory = Search.getQueryFactory(backend);
+        queryFactoryTwo = Search.getQueryFactory(backendTwo);
     }
 
     public void setAlertsEngine(AlertsEngine alertsEngine) {
@@ -119,7 +123,7 @@ public class IspnDefinitionsServiceImpl implements DefinitionsService {
             throw new IllegalArgumentException("Properties must be not null");
         }
         String pluginName = actionDefinition.getActionPlugin();
-        IspnActionPlugin plugin = (IspnActionPlugin) backend.get(pk(pluginName));
+        IspnActionPlugin plugin = (IspnActionPlugin) backendTwo.get(pk(pluginName));
         if(plugin == null) {
             throw new IllegalArgumentException("Plugin: " + plugin + " is not deployed");
         }
@@ -1382,10 +1386,10 @@ public class IspnDefinitionsServiceImpl implements DefinitionsService {
             throw new IllegalArgumentException("defaultProperties must be not null");
         }
         String pk = pk(actionPlugin);
-        if (backend.get(pk) != null) {
+        if (backendTwo.get(pk) != null) {
             throw new FoundException(pk);
         }
-        backend.put(pk, new IspnActionPlugin(actionPlugin, defaultProperties));
+        backendTwo.put(pk, new IspnActionPlugin(actionPlugin, defaultProperties));
     }
 
     @Override
@@ -1393,7 +1397,7 @@ public class IspnDefinitionsServiceImpl implements DefinitionsService {
         if (isEmpty(actionPlugin)) {
             throw new IllegalArgumentException("actionPlugin must be not null");
         }
-        backend.remove(pk(actionPlugin));
+        backendTwo.remove(pk(actionPlugin));
     }
 
     @Override
@@ -1415,18 +1419,18 @@ public class IspnDefinitionsServiceImpl implements DefinitionsService {
             throw new IllegalArgumentException("defaultProperties must be not null");
         }
         String pk = pk(actionPlugin);
-        IspnActionPlugin found = (IspnActionPlugin) backend.get(pk);
+        IspnActionPlugin found = (IspnActionPlugin) backendTwo.get(pk);
         if (found == null) {
             throw new NotFoundException(pk);
         }
         found.setDefaultProperties(defaultProperties);
-        backend.put(pk, found);
+        backendTwo.put(pk, found);
     }
 
     @Override
     public Collection<String> getActionPlugins() throws Exception {
         Set<String> pluginNames = new HashSet<>();
-        List<IspnActionPlugin> plugins = queryFactory.from(IspnActionPlugin.class).build().list();
+        List<IspnActionPlugin> plugins = queryFactoryTwo.from(IspnActionPlugin.class).build().list();
         for (IspnActionPlugin plugin : plugins) {
             pluginNames.add(plugin.getActionPlugin());
         }
@@ -1438,7 +1442,7 @@ public class IspnDefinitionsServiceImpl implements DefinitionsService {
         if (isEmpty(actionPlugin)) {
             throw new IllegalArgumentException("actionPlugin must be not null");
         }
-        IspnActionPlugin found = (IspnActionPlugin) backend.get(pk(actionPlugin));
+        IspnActionPlugin found = (IspnActionPlugin) backendTwo.get(pk(actionPlugin));
         return found == null ? null : found.getDefaultProperties().keySet();
     }
 
@@ -1447,7 +1451,7 @@ public class IspnDefinitionsServiceImpl implements DefinitionsService {
         if (isEmpty(actionPlugin)) {
             throw new IllegalArgumentException("actionPlugin must be not null");
         }
-        IspnActionPlugin found = (IspnActionPlugin) backend.get(pk(actionPlugin));
+        IspnActionPlugin found = (IspnActionPlugin) backendTwo.get(pk(actionPlugin));
         // TODO AddFullTrigger will fail to NPE he possif the actionPlugin is incorrectly typed
         return found == null ? null : found.getDefaultProperties();
     }

@@ -1,20 +1,36 @@
 package org.hawkular.alerts.engine.impl.ispn.model;
 
-import java.io.Serializable;
-
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import org.hawkular.alerts.api.model.dampening.Dampening;
 import org.hawkular.alerts.api.model.trigger.Mode;
+import org.hawkular.alerts.engine.impl.ispn.model.jpa.IspnDampeningId;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import java.io.Serializable;
 
 /**
  * @author Jay Shaughnessy
  * @author Lucas Ponce
  */
 @Indexed(index = "dampening")
+@Entity
+@IdClass(IspnDampeningId.class)
+@TypeDefs({
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+})
 public class IspnDampening implements Serializable {
+    @Id
+    private String dampeningId;
 
     @Field(store = Store.YES, analyze = Analyze.NO)
     private String tenantId;
@@ -25,6 +41,8 @@ public class IspnDampening implements Serializable {
     @Field(store = Store.YES, analyze = Analyze.NO)
     private Mode triggerMode;
 
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
     private Dampening dampening;
 
     public IspnDampening() {
@@ -44,6 +62,7 @@ public class IspnDampening implements Serializable {
         this.tenantId = dampening.getTenantId();
         this.triggerId = dampening.getTriggerId();
         this.triggerMode = dampening.getTriggerMode();
+        this.dampeningId = dampening.getDampeningId();
     }
 
     public String getTenantId() {

@@ -1,36 +1,55 @@
 package org.hawkular.alerts.engine.impl.ispn.model;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import org.hawkular.alerts.api.model.trigger.Trigger;
+import org.hawkular.alerts.engine.impl.ispn.model.jpa.IspnTriggerId;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Jay Shaughnessy
  * @author Lucas Ponce
  */
 @Indexed(index = "trigger")
+@Entity
+@IdClass(IspnTriggerId.class)
+@TypeDefs({
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+})
 public class IspnTrigger implements Serializable {
-
+    @Id
     @Field(store = Store.YES, analyze = Analyze.NO)
     private String tenantId;
 
+    @Id
     @Field(store = Store.YES, analyze = Analyze.NO)
     private String triggerId;
 
     @Field(store = Store.YES, analyze = Analyze.NO)
     @FieldBridge(impl = TagsBridge.class)
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
     private Map<String, String> tags;
 
     @Field(store = Store.YES, analyze = Analyze.NO)
     private String memberOf;
 
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
     private Trigger trigger;
 
     public IspnTrigger() {

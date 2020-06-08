@@ -4,6 +4,16 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import org.hawkular.alerts.engine.impl.ispn.model.jpa.IspnActionPluginId;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
@@ -14,10 +24,19 @@ import org.hibernate.search.annotations.Store;
  * @author Lucas Ponce
  */
 @Indexed(index = "actionPlugin")
+@Entity
+@IdClass(IspnActionPluginId.class)
+@TypeDefs({
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+})
 public class IspnActionPlugin implements Serializable {
     @Field(store = Store.YES, analyze = Analyze.NO)
-    private String actionPlugin;
-    private Map<String, String> defaultProperties;
+    @Id
+    private String actionPlugin;  // PK
+
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
+    private Map<String, String> defaultProperties; // JSON field
 
     public IspnActionPlugin() {
     }

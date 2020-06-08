@@ -1,13 +1,22 @@
 package org.hawkular.alerts.engine.impl.ispn.model;
 
-import java.io.Serializable;
-
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import org.hawkular.alerts.api.model.action.Action;
+import org.hawkular.alerts.engine.impl.ispn.model.jpa.IspnActionId;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.SortableField;
 import org.hibernate.search.annotations.Store;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import java.io.Serializable;
 
 /**
  * An Action records the result of an ActionPlugin operating on an Event.
@@ -16,26 +25,38 @@ import org.hibernate.search.annotations.Store;
  * @author Lucas Ponce
  */
 @Indexed(index = "action")
+@Entity
+@IdClass(IspnActionId.class)
+@TypeDefs({
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+})
 public class IspnAction implements Serializable {
+    @Id
     @Field(store = Store.YES, analyze = Analyze.NO)
     private String tenantId;
 
+    @Id
     @Field(store = Store.YES, analyze = Analyze.NO)
     private String actionPlugin;
 
+    @Id
     @Field(store = Store.YES, analyze = Analyze.NO)
     private String actionId;
 
+    @Id
     @Field(store = Store.YES, analyze = Analyze.NO)
     private String eventId;
 
     @Field(store = Store.YES, analyze = Analyze.NO)
     private String result;
 
+    @Id
     @Field(store = Store.YES, analyze = Analyze.NO)
     @SortableField
     private long ctime;
 
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
     private Action action;
 
     public IspnAction() {

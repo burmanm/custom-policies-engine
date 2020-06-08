@@ -1,7 +1,6 @@
 package org.hawkular.alerts.engine.impl.ispn.model;
 
-import java.io.Serializable;
-
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import org.hawkular.alerts.api.model.condition.AvailabilityCondition;
 import org.hawkular.alerts.api.model.condition.CompareCondition;
 import org.hawkular.alerts.api.model.condition.Condition;
@@ -14,17 +13,34 @@ import org.hawkular.alerts.api.model.condition.StringCondition;
 import org.hawkular.alerts.api.model.condition.ThresholdCondition;
 import org.hawkular.alerts.api.model.condition.ThresholdRangeCondition;
 import org.hawkular.alerts.api.model.trigger.Mode;
+import org.hawkular.alerts.engine.impl.ispn.model.jpa.IspnConditionId;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import java.io.Serializable;
 
 /**
  * @author Jay Shaughnessy
  * @author Lucas Ponce
  */
 @Indexed(index = "condition")
+@Entity
+@IdClass(IspnConditionId.class)
+@TypeDefs({
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+})
 public class IspnCondition implements Serializable {
+    @Id
+    private String conditionId;
 
     @Field(store = Store.YES, analyze = Analyze.NO)
     private String tenantId;
@@ -35,6 +51,8 @@ public class IspnCondition implements Serializable {
     @Field(store = Store.YES, analyze = Analyze.NO)
     private Mode triggerMode;
 
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
     private Condition condition;
 
     public IspnCondition() {
@@ -86,6 +104,7 @@ public class IspnCondition implements Serializable {
         this.tenantId = condition.getTenantId();
         this.triggerId = condition.getTriggerId();
         this.triggerMode = condition.getTriggerMode();
+        this.conditionId = condition.getConditionId();
     }
 
     public String getTenantId() {

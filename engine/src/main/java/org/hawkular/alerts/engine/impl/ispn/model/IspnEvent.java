@@ -4,8 +4,13 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import org.hawkular.alerts.api.model.event.Alert;
 import org.hawkular.alerts.api.model.event.Event;
+import org.hawkular.alerts.engine.impl.ispn.model.jpa.IspnEventId;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
@@ -14,19 +19,31 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.SortableField;
 import org.hibernate.search.annotations.Store;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+
 /**
  * @author Jay Shaughnessy
  * @author Lucas Ponce
  */
 @Indexed(index = "event")
+@Entity
+@IdClass(IspnEventId.class)
+@TypeDefs({
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+})
 public class IspnEvent implements Serializable {
 
     @Field(store = Store.YES, analyze = Analyze.NO)
     private String eventType;
 
+    @Id
     @Field(store = Store.YES, analyze = Analyze.NO)
     private String tenantId;
 
+    @Id
     @Field(store = Store.YES, analyze = Analyze.NO)
     @SortableField
     private String id;
@@ -34,6 +51,8 @@ public class IspnEvent implements Serializable {
     @Field(store = Store.YES, analyze = Analyze.YES)
     @FieldBridge(impl = TagsBridge.class)
     @Analyzer(impl = TagsBridge.TagsAnalyzer.class)
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
     private Map<String, String> tags;
 
     @Field(store = Store.YES, analyze = Analyze.NO)
@@ -55,6 +74,8 @@ public class IspnEvent implements Serializable {
     @Field(store = Store.YES, analyze = Analyze.NO)
     private String category;
 
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
     private Event event;
 
     public IspnEvent() {

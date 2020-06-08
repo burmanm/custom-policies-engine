@@ -73,25 +73,18 @@
     <dependency>
       <groupId>org.infinispan</groupId>
       <artifactId>infinispan-cachestore-rocksdb</artifactId>
-      <version>${version.org.infinispan}</version>
     </dependency>
-
     <dependency>
       <groupId>org.infinispan</groupId>
       <artifactId>infinispan-jboss-marshalling</artifactId>
-      <version>${version.org.infinispan}</version>
     </dependency>
-
     <dependency>
       <groupId>org.infinispan</groupId>
       <artifactId>infinispan-core</artifactId>
-      <version>${version.org.infinispan}</version>
     </dependency>
-
     <dependency>
       <groupId>org.infinispan</groupId>
       <artifactId>infinispan-query</artifactId>
-      <version>${version.org.infinispan}</version>
       <exclusions>
         <exclusion>
           <groupId>org.hibernate</groupId>
@@ -99,6 +92,36 @@
         </exclusion>
       </exclusions>
     </dependency>
+
+    <!-- Quarkus Infinispan -->
+    <!-- Hibernate ORM specific dependencies -->
+    <dependency>
+      <groupId>com.redhat.cloud.policies</groupId>
+      <artifactId>infinispan-cachestore-db</artifactId>
+      <version>2.1.0-SNAPSHOT</version>
+    </dependency>
+
+    <!-- JDBC driver dependencies -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-postgresql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.vladmihalcea</groupId>
+      <artifactId>hibernate-types-52</artifactId>
+      <version>2.3.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.persistence</groupId>
+      <artifactId>javax.persistence-api</artifactId>
+      <version>2.2</version>
+    </dependency>
+
 
     <!-- Tests -->
     <dependency>
@@ -121,6 +144,19 @@
     </resources>
 
     <plugins>
+      <plugin>
+        <groupId>org.jboss.jandex</groupId>
+        <artifactId>jandex-maven-plugin</artifactId>
+        <version>1.0.7</version>
+        <executions>
+          <execution>
+            <id>make-index</id>
+            <goals>
+              <goal>jandex</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
