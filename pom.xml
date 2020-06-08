@@ -109,10 +109,10 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <modules>
+        <module>infinispan-cache</module>
         <module>api</module>
         <module>engine</module>
         <module>external</module>
-        <module>infinispan-cache</module>
       </modules>
     </profile>
   </profiles>
