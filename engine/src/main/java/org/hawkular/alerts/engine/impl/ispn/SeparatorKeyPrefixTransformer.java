@@ -18,14 +18,14 @@ import java.util.Arrays;
  * This is the counterpart of {@link IspnPk} class, returning the ISPN key back to the Entity key for
  * DB searches.
  */
-public class DashKeyPrefixTransformer implements KeyTransformer {
+public class SeparatorKeyPrefixTransformer implements KeyTransformer {
 
     // TODO This class needs tests
 
     @Override
     public Class<?> keyToClass(Object okey) {
         String key = (String) okey;
-        String[] parts = key.split("-");
+        String[] parts = key.split(IspnPk.SEPARATOR);
         switch(parts[0]) {
             case "Action":
                 return IspnAction.class;
@@ -51,17 +51,12 @@ public class DashKeyPrefixTransformer implements KeyTransformer {
         IdClass annotation = targetClass.getAnnotation(IdClass.class);
         Class<?> idKeyClass = annotation.value();
         for (Constructor<?> declaredConstructor : idKeyClass.getDeclaredConstructors()) {
-            // TODO Some classes have "long" in the constructor, not String.
             if(declaredConstructor.getParameterCount() < 1) {
                 // Skip Entity's default constructor
                 continue;
             }
-            return declaredConstructor.newInstance(Arrays.copyOfRange(keyParts, 0, declaredConstructor.getParameterCount()));
-//            if(declaredConstructor.getParameterCount() == keyParts.length) {
-//                return declaredConstructor.newInstance((Object[]) keyParts);
-//            } else {
-//                System.out.printf("Sizes %s: %d vs %d\n", declaredConstructor.toGenericString(), declaredConstructor.getParameterCount(), keyParts.length);
-//            }
+            // All constructors have to accept only Strings as input (and do the transformation)
+            return declaredConstructor.newInstance((Object[]) Arrays.copyOfRange(keyParts, 0, declaredConstructor.getParameterCount()));
         }
         return null;
     }
@@ -69,15 +64,9 @@ public class DashKeyPrefixTransformer implements KeyTransformer {
     @Override
     public Object keyToID(Object okey) {
         String key = (String) okey;
-//        System.out.printf("keyToId-> Received key: %s\n", key);
         Class<?> targetClass = keyToClass(okey);
-        String[] parts = key.split("-");
+        String[] parts = key.split(IspnPk.SEPARATOR);
         String[] idParts = Arrays.copyOfRange(parts, 1, parts.length);
-
-//        if(targetClass == IspnActionPlugin.class) {
-//            // TODO Or should I modify it to work with the common code?
-//            return idParts[0];
-//        }
 
         try {
             return keyToId(targetClass, idParts);

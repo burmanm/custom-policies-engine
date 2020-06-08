@@ -8,7 +8,7 @@
         <class>com.redhat.cloud.policies.infinispan.persistence.impl.MetadataEntity</class>
         <!-- These are our own classes -->
         <class>org.hawkular.alerts.engine.impl.ispn.model.IspnAction</class>
-        <class>org.hawkular.alerts.engine.impl.ispn.model.IspnActionPlugin</class>
+        <class>org.hawkular.alerts.engine.impl.ispn.model.IspnActionPlugin</class> <!-- ActionPlugins don't need any persistence in reality .. -->
         <class>org.hawkular.alerts.engine.impl.ispn.model.IspnActionDefinition</class>
         <class>org.hawkular.alerts.engine.impl.ispn.model.IspnCondition</class>
         <class>org.hawkular.alerts.engine.impl.ispn.model.IspnDampening</class>
@@ -19,10 +19,10 @@
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
             <property name="hibernate.connection.username" value="policies"/>
             <property name="hibernate.connection.password" value="policies"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL10Dialect" />
+            <!-- <property name="hibernate.dialect" value="${hibernate.dialect}" /> --> <!-- dialect is automatically determined by hibernate, uncomment to force the dialect -->
             <property name="hibernate.jdbc.batch_size" value="20" />
             <property name="hibernate.jdbc.fetch_size" value="20" />
-            <property name="hibernate.hbm2ddl.auto" value="update"/> <!-- TODO Should be update and this should be in external? -->
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
             <property name="hibernate.show_sql" value="false" /> <!-- set to true if you'd like to see what's going on -->
             <property name="hibernate.connection.autocommit" value="false" />
         </properties>

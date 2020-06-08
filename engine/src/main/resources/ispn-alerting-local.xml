@@ -32,7 +32,7 @@
           <entities>
             <entity>org.hawkular.alerts.engine.impl.ispn.model.IspnActionPlugin</entity>
           </entities>
-          <property name="key-transformer">org.hawkular.alerts.engine.impl.ispn.DashKeyPrefixTransformer</property>
+          <property name="key-transformer">org.hawkular.alerts.engine.impl.ispn.SeparatorKeyPrefixTransformer</property>
         </db-store>
       </persistence>
       <memory>
@@ -67,7 +67,7 @@
             <entity>org.hawkular.alerts.engine.impl.ispn.model.IspnEvent</entity>
             <entity>org.hawkular.alerts.engine.impl.ispn.model.IspnTrigger</entity>
           </entities>
-          <property name="key-transformer">org.hawkular.alerts.engine.impl.ispn.DashKeyPrefixTransformer</property>
+          <property name="key-transformer">org.hawkular.alerts.engine.impl.ispn.SeparatorKeyPrefixTransformer</property>
         </db-store>
 
 <!--        &lt;!&ndash; xmlns="urn:infinispan:config:store:rocksdb:10.1" schemaLocation="https://infinispan.org/schemas/infinispan-config-10.1.xsd"  &ndash;&gt;-->

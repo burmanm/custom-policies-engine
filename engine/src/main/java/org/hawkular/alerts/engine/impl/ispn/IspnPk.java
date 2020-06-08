@@ -13,19 +13,22 @@ import org.hawkular.alerts.api.model.trigger.Trigger;
  */
 public class IspnPk {
 
+    public final static String SEPARATOR = Character.toString(Character.PARAGRAPH_SEPARATOR);
+
     public static String pk(Action action) {
         if (action == null) {
             return null;
         }
-        return new StringBuilder("Action-")
+        return new StringBuilder("Action")
+                .append(SEPARATOR)
                 .append(action.getTenantId())
-                .append("-")
+                .append(SEPARATOR)
                 .append(action.getActionPlugin())
-                .append("-")
+                .append(SEPARATOR)
                 .append(action.getActionId())
-                .append("-")
+                .append(SEPARATOR)
                 .append(action.getEventId())
-                .append("-")
+                .append(SEPARATOR)
                 .append(action.getCtime())
                 .toString();
     }
@@ -34,18 +37,19 @@ public class IspnPk {
         if (actionPlugin == null) {
             return null;
         }
-        return new StringBuilder("ActionPlugin-").append(actionPlugin).toString();
+        return new StringBuilder("ActionPlugin").append(SEPARATOR).append(actionPlugin).toString();
     }
 
     public static String pk(ActionDefinition actionDefinition) {
         if (actionDefinition == null) {
             return null;
         }
-        return new StringBuilder("ActionDefinition-")
+        return new StringBuilder("ActionDefinition")
+                .append(SEPARATOR)
                 .append(actionDefinition.getTenantId())
-                .append("-")
+                .append(SEPARATOR)
                 .append(actionDefinition.getActionPlugin())
-                .append("-")
+                .append(SEPARATOR)
                 .append(actionDefinition.getActionId())
                 .toString();
     }
@@ -54,11 +58,12 @@ public class IspnPk {
         if (tenantId == null || actionPlugin == null || actionId == null) {
             return null;
         }
-        return new StringBuilder("ActionDefinition-")
+        return new StringBuilder("ActionDefinition")
+                .append(SEPARATOR)
                 .append(tenantId)
-                .append("-")
+                .append(SEPARATOR)
                 .append(actionPlugin)
-                .append("-")
+                .append(SEPARATOR)
                 .append(actionId)
                 .toString();
     }
@@ -67,7 +72,8 @@ public class IspnPk {
         if (condition == null) {
             return null;
         }
-        return new StringBuilder("Condition-")
+        return new StringBuilder("Condition")
+                .append(SEPARATOR)
                 .append(condition.getConditionId())
                 .toString();
     }
@@ -83,7 +89,8 @@ public class IspnPk {
         if (dampeningId == null) {
             return null;
         }
-        return new StringBuilder("Dampening-")
+        return new StringBuilder("Dampening")
+                .append(SEPARATOR)
                 .append(dampeningId)
                 .toString();
     }
@@ -99,9 +106,10 @@ public class IspnPk {
         if (tenantId == null || triggerId == null) {
             return null;
         }
-        return new StringBuilder("Trigger-")
+        return new StringBuilder("Trigger")
+                .append(SEPARATOR)
                 .append(tenantId)
-                .append("-")
+                .append(SEPARATOR)
                 .append(triggerId)
                 .toString();
     }
@@ -110,9 +118,10 @@ public class IspnPk {
         if (event == null) {
             return null;
         }
-        return new StringBuilder("Event-")
+        return new StringBuilder("Event")
+                .append(SEPARATOR)
                 .append(event.getTenantId())
-                .append("-")
+                .append(SEPARATOR)
                 .append(event.getId())
                 .toString();
     }
@@ -121,9 +130,10 @@ public class IspnPk {
         if (tenantId == null || eventId == null) {
             return null;
         }
-        return new StringBuilder("Event-")
+        return new StringBuilder("Event")
+                .append(SEPARATOR)
                 .append(tenantId)
-                .append("-")
+                .append(SEPARATOR)
                 .append(eventId)
                 .toString();
     }
