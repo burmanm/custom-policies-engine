@@ -4,27 +4,21 @@ import org.infinispan.configuration.cache.Configuration;
 import org.infinispan.configuration.cache.StoreConfiguration;
 import org.infinispan.configuration.parsing.ConfigurationBuilderHolder;
 import org.infinispan.configuration.parsing.ParserRegistry;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URL;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 
 public class ConfigurationTest {
 
     @Test
     public void testXmlConfig() throws IOException {
-        // TODO Add example files for Entities & Key so we can check that they were loaded correctly
         URL config = ConfigurationTest.class.getResource("/config/example-config.xml");
-        if(config == null) {
-            fail();
-        }
         ConfigurationBuilderHolder configHolder = new ParserRegistry().parse(config);
 
         // These are generic Infinispan config checks - test them to ensure we didn't break them

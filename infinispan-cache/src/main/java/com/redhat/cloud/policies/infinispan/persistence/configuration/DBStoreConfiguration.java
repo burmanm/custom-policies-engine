@@ -21,6 +21,8 @@ import java.util.Set;
 @SerializedWith(DBStoreConfigurationSerializer.class)
 public class DBStoreConfiguration extends AbstractStoreConfiguration {
 
+   public static final String KEY_TRANSFORMER_PROPERTY = "key-transformer";
+
    static final AttributeDefinition<String> PERSISTENCE_UNIT_NAME = AttributeDefinition.builder("persistenceUnitName", null, String.class).immutable().xmlName("persistence-unit").build();
    // Set is fine
    public static final AttributeDefinition<Set<Class<?>>> ENTITIES = AttributeDefinition.builder("entities", null, (Class<Set<Class<?>>>) (Class<?>) Set.class)

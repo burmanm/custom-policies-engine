@@ -9,7 +9,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 /**
  * Entity which should hold serialized metadata
@@ -37,8 +36,6 @@ public class MetadataEntity {
    private long created;
    @Column(name = LAST_USED)
    private long lastUsed;
-   @Version
-   private int version;
 
    public MetadataEntity() {
    }
@@ -101,14 +98,6 @@ public class MetadataEntity {
 
    public void setLastUsed(long lastUsed) {
       this.lastUsed = lastUsed;
-   }
-
-   public int getVersion() {
-      return version;
-   }
-
-   public void setVersion(int version) {
-      this.version = version;
    }
 
    public boolean hasBytes() {
